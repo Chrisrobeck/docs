@@ -360,13 +360,13 @@ command_line_scripts:
       parameters:
         -
           name: source_file
-          quote: "\""
+          quote: '"'
         -
           name: target_file
           quote:
-            start: "\""
-            end: "\""
-            quote: "\""
+            start: '"'
+            end: '"'
+            quote: '"'
             escape_char: \
     generate_report:
       name: Generate report
@@ -398,17 +398,19 @@ The script configuration properties are as follows:
 | Property name | Description |
 |------------------|-------------------------------------------|
 | name | Friendly name for the script, that will be displayed in the recipe UI. |
-| command | The command invocation array. The value of each item can use mustache template variables to substitute the parameter values. The string is passed through a mustache interpreter using the variables declared as per the parameters. |
+| command | The command invocation array. The value of each item can use mustache template variables to substitute the parameter values. |
+| parameters | **Optional** The parameter array. Defaults to an empty array. |
 | concurrent_limit | **Optional** The max number of concurrently executed scripts (must be a positive number, defaults to 100).|
-| parameters | **Optional** The parameter array. Defaults to empty array. |
 
+<br>
 The command invocation element configuration cat be just a string, but also can contain properties as follows:
  
 | Property name | Description |
 |------------------|-------------------------------------------|
 | value | The command invocation element value. |
-| if | The parameter whose non-empty value defines whether this element is taken in account. |
+| if | The parameter name. If parameter value is empty, this command invocation element is not taken in account. |
 
+<br>
 The parameter configuration properties are as follows:
 
 | Property name | Description |
@@ -417,14 +419,22 @@ The parameter configuration properties are as follows:
 | quote | **Optional** The rules of parameter quoting. Defaults to no rules. |
 | schema | **Optional** The parameter schema. |
 
+<br>
 The quote configuration can have properties or just be a string. The quote configuration properties are as follows:
-
 
 | Property name | Description |
 |------------------|-------------------------------------------|
-| start | The left quote character. |
-| end | The right quote character. |
+| start | The opening quote character. |
+| end | The closing quote character. |
 | quote | The quote character in the parameter value to be escaped. |
 | escape_char | The escape character. |
 
-If quote configuration is a string, its value is considered as the value of 'start', 'end' and 'quote' properties, and 'escape_char' property is set to be defaulе for used platform.
+If the quote configuration is a string, its value is considered as the value of the 'start', 'end' and 'quote' properties, and the 'escape_char' property value is set to be default for used platform - \ for Unix, " for Windows.
+
+<br>
+The parameter schema configuration can have properties as follows:
+
+| Property name | Description |
+|------------------|-------------------------------------------|
+| optional | **Optional** The flag of the parameter optionality. Defaults to false. |
+| label | **Optional** Friendly name for the script, that will be displayed in the recipe UI. Defaults to the parameter name. |
