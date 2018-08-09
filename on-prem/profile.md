@@ -14,6 +14,7 @@ A single Workato on-premises agent can be used to connect with multiple on-premi
  - [Active directory](#active-directory-connection-profile)
  - [HTTP resource](#http-resources)
  - [NTLM](#ntlm-connection-profile)
+ - [Command-line scripts](#command-line-scripts-profile)
 
  Additionally, you can configure [proxy servers](/on-prem/proxy.md) for on-premises agents installed in a server with limited internet connectivity.
 
@@ -332,3 +333,98 @@ The following profile properties are supported:
 | trustAll | **Optional**. Specifies whether trust all certificates for SSL/TLS connections (default false) |
 
 HTTP methods supported for NTLM connections are `GET`, `POST`, `PUT`, `PATCH`, `DELETE` and `HEAD`.
+
+## Command-line scripts profile
+An example profile on Unix can look like this:
+```YAML
+command_line_scripts: 
+  workday_reports:
+    copy_file:
+      name: Copy file
+      command:
+        - /bin/cp
+        - "{{source_file}}"
+        - "{{target_directory}}"
+      parameters:
+        -
+          name: source_file
+        -
+          name: target_directory
+    append_file_to_another:
+      name: Append file to another
+      concurrent_limit: 1
+      command:
+        - bash
+        - -c
+        - "cat {{source_file}} >> {{target_file}}"
+      parameters:
+        -
+          name: source_file
+          quote: "\""
+        -
+          name: target_file
+          quote:
+            start: "\""
+            end: "\""
+            quote: "\""
+            escape_char: \
+    generate_report:
+      name: Generate report
+      command:
+        - python
+        - --from
+        - "{{from_date}}"
+        - 
+          value: "--to"
+          if: "to_date"
+        - 
+          value: "{{to_date}}"
+          if: "to_date" 
+      parameters:
+        -
+          name: from_date
+        -
+          name: to_date
+          optional : true
+```
+
+The command-line script profiles are added to command_line_scripts section in config.yml. 
+Each profile describes its scripts. Each script in the profile should use an unique identifier as key. 
+Under each key the script configuration is stored.
+
+
+The script configuration properties are as follows:
+
+| Property name | Description |
+|------------------|-------------------------------------------|
+| name | Friendly name for the script, that will be displayed in the recipe UI. |
+| command | The command invocation array. The value of each item can use mustache template variables to substitute the parameter values. The string is passed through a mustache interpreter using the variables declared as per the parameters. |
+| concurrent_limit | **Optional** The max number of concurrently executed scripts (must be a positive number, defaults to 100).|
+| parameters | **Optional** The parameter array. Defaults to empty array. |
+
+The command invocation element configuration cat be just a string, but also can contain properties as follows:
+ 
+| Property name | Description |
+|------------------|-------------------------------------------|
+| value | The command invocation element value. |
+| if | The parameter whose non-empty value defines whether this element is taken in account. |
+
+The parameter configuration properties are as follows:
+
+| Property name | Description |
+|------------------|-------------------------------------------|
+| name | The parameter name. |
+| quote | **Optional** The rules of parameter quoting. Defaults to no rules. |
+| schema | **Optional** The parameter schema. |
+
+The quote configuration can have properties or just be a string. The quote configuration properties are as follows:
+
+
+| Property name | Description |
+|------------------|-------------------------------------------|
+| start | The left quote character. |
+| end | The right quote character. |
+| quote | The quote character in the parameter value to be escaped. |
+| escape_char | The escape character. |
+
+If quote configuration is a string, its value is considered as the value of 'start', 'end' and 'quote' properties, and 'escape_char' property is set to be defaulе for used platform.
