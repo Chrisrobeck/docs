@@ -385,7 +385,8 @@ command_line_scripts:
           name: from_date
         -
           name: to_date
-          optional : true
+          schema:
+            optional : true
 ```
 
 The command-line script profiles are added to command_line_scripts section in config.yml. 
