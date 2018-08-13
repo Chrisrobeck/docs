@@ -335,10 +335,14 @@ The following profile properties are supported:
 HTTP methods supported for NTLM connections are `GET`, `POST`, `PUT`, `PATCH`, `DELETE` and `HEAD`.
 
 ## Command-line scripts profile
+This profile allows to run arbitrary scripts or commands on OPA. The script definition in config file can have parameters.
+When you declare an action, you need to specify the values of the parameters.
+
 An example profile on Unix can look like this:
 ```YAML
 command_line_scripts: 
   workday_reports:
+    concurrent_limit: 3
     copy_file:
       name: Copy file
       command:
@@ -352,7 +356,6 @@ command_line_scripts:
           name: target_directory
     append_file_to_another:
       name: Append file to another
-      concurrent_limit: 1
       command:
         - bash
         - -c
@@ -388,9 +391,11 @@ command_line_scripts:
           schema:
             optional : true
 ```
-
-The command-line script profiles are added to command_line_scripts section in config.yml. 
-Each profile describes its scripts. Each script in the profile should use an unique identifier as key. 
+<br>
+The command-line script profiles are placed in command_line_scripts section in config.yml. 
+The profile configuration can contain optional property 'concurrent_limit' which defines the limit for 
+concurrently executed scripts. By default, the value of this limit is 10.
+Also each profile describes its scripts. Each script in the profile should use an unique identifier as key. 
 Under each key the script configuration is stored.
 
 
@@ -401,7 +406,6 @@ The script configuration properties are as follows:
 | name | Friendly name for the script, that will be displayed in the recipe UI. |
 | command | The command invocation array. The value of each item can use mustache template variables to substitute the parameter values. |
 | parameters | **Optional** The parameter array. Defaults to an empty array. |
-| concurrent_limit | **Optional** The max number of concurrently executed scripts (must be a positive number, defaults to 100).|
 
 <br>
 The command invocation element configuration cat be just a string, but also can contain properties as follows:
