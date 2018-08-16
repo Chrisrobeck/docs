@@ -4,9 +4,9 @@ date: 2017-03-16 10:00:00 Z
 ---
 
 # Data pills
-Data pills are output data from a trigger or an action step. They are variables that you can use in mapping business logic into recipe steps. e.g. to create an Zendesk organization from a Salesforce account you will assign data pills from Salesforce account to the Zendesk organization action input fields.
+Data pills are output data from a trigger or an action step. They are variables that you can use in mapping business logic into recipe steps. e.g. to create a Zendesk organization from a Salesforce account you will assign data pills from Salesforce account to the Zendesk organization action input fields.
 
-Data pills are contained within datatrees, within the **App Data** section. At an recipe step, the **App Data** section contains the output from the trigger and every action preceeding this step.
+Data pills are contained within datatrees, within the **App Data** section. At a recipe step, the **App Data** section contains the output from the trigger and every action preceeding this step.
 
 ![Datatree](/assets/images/recipes/data-pills/datatree-example.png)
 *Datatree within a recipe step*
